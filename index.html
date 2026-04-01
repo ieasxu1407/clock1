@@ -2,78 +2,127 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>미니 시계</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>시계</title>
 
 <style>
 body {
     margin: 0;
-    background: #eee;
+    background: #f2f2f2;
+    font-family: 'Pretendard', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
 }
 
-/* 위젯 */
-.widget {
-    width: 300px;
-    height: 200px;
-    background: rgba(255,255,255,0.9);
-    border-radius: 12px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+/* 중앙 컨텐츠 */
+.container {
+    text-align: center;
+    color: #555;
+}
 
+.label {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.time {
+    font-size: 80px;
+    font-weight: 600;
+    letter-spacing: 4px;
+}
+
+.ampm {
+    font-size: 20px;
+    margin-right: 10px;
+}
+
+.date {
+    margin-top: 10px;
+    font-size: 18px;
+}
+
+/* 오른쪽 아래 버튼 */
+.floating-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
-
-    font-family: 'Segoe UI', sans-serif;
+    cursor: pointer;
+    transition: 0.2s;
 }
 
-/* 날짜 */
-.date {
-    font-size: 16px;
-    color: #555;
-    margin-bottom: 6px;
+.floating-btn:hover {
+    transform: scale(1.1);
 }
 
-/* 시간 */
-.time {
-    font-size: 36px;
-    font-weight: bold;
-    letter-spacing: 2px;
+/* 체크 아이콘 느낌 */
+.floating-btn::after {
+    content: "✔";
+    font-size: 20px;
+    color: #666;
 }
 </style>
 </head>
 
 <body>
 
-<div class="widget">
+<div class="container">
+    <div class="label">현재 시간</div>
+    <div>
+        <span class="ampm" id="ampm"></span>
+        <span class="time" id="time"></span>
+    </div>
     <div class="date" id="date"></div>
-    <div class="time" id="time"></div>
 </div>
+
+<!-- 오른쪽 아래 버튼 -->
+<div class="floating-btn" onclick="goLink()"></div>
 
 <script>
 function updateClock() {
     const now = new Date();
 
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    const seconds = String(now.getSeconds()).padStart(2, '0');
+    let hours = now.getHours();
+    let minutes = now.getMinutes();
+    let seconds = now.getSeconds();
+
+    let ampm = hours >= 12 ? "오후" : "오전";
+
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+
+    hours = String(hours).padStart(2, '0');
+    minutes = String(minutes).padStart(2, '0');
+    seconds = String(seconds).padStart(2, '0');
+
+    document.getElementById("time").innerText = `${hours}:${minutes}:${seconds}`;
+    document.getElementById("ampm").innerText = ampm;
 
     const year = now.getFullYear();
     const month = now.getMonth() + 1;
     const day = now.getDate();
+    const week = ["일요일","월요일","화요일","수요일","목요일","금요일","토요일"];
 
-    const days = ["일요일","월요일","화요일","수요일","목요일","금요일","토요일"];
-    const dayName = days[now.getDay()];
-
-    document.getElementById("time").textContent = `${hours}:${minutes}:${seconds}`;
-    document.getElementById("date").textContent = `${year}년 ${month}월 ${day}일 ${dayName}`;
+    document.getElementById("date").innerText =
+        `${year}년 ${month}월 ${day}일 ${week[now.getDay()]}`;
 }
 
 setInterval(updateClock, 1000);
 updateClock();
+
+/* 버튼 클릭 시 이동 */
+function goLink() {
+    window.location.href = "https://github.com/ieasxu1407/clock1"; // 👉 원하는 링크로 바꿔
+}
 </script>
 
 </body>
